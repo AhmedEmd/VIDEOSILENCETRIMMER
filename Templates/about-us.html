@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Our Application</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            margin: 0;
+        }
+        .container {
+            width: 320px;
+            padding: 25px;
+            background: #1e1e1e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        h2 {
+            text-align: center;
+            color: #61dafb;
+        }
+        p {
+            font-size: 14px;
+            color: #ffffff;
+            text-align: justify;
+            line-height: 1.6;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .fixed-top-right {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 90px; /* Adjust the size as needed */
+    height: auto;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 1000; /* Ensures the image stays on top of other elements */
+    filter: invert(100%); /* Inverts the colors of the image */
+    animation: fadeToggleBtn 1s ease-in-out forwards;
+            animation-delay: 1s;
+}
+@keyframes fadeToggleBtn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>About Our Application</h2>
+        <p>
+            Our web application helps content creators streamline their video editing process by automatically removing silent sections from their videos. This reduces the stress of manually trimming out silent moments and ensures creators don't have to redo videos due to extended periods of silence. 
+        </p>
+        <p>
+            The backend is stateless, meaning that once the silent sections are trimmed, the video is processed and delivered back to the user without storing any of the user's data. This ensures privacy and efficiency for content creators, allowing them to focus more on their creativity rather than editing.
+        </p>
+    </div>
+    <a href="index.html">
+        <img src="trimx.png" alt="Logo" class="fixed-top-right">
+    </a>
+</body>
+</html>

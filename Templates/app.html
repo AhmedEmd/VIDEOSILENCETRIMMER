@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 350px;
+            padding: 25px;
+            background: #1e1e1e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #61dafb;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #61dafb;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4ea0d9;
+        }
+
+        .dots {
+            display: inline-block;
+        }
+
+        .dots span {
+            display: inline-block;
+            margin-left: 2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #fff;
+            animation: jumping 0.6s infinite ease-in-out;
+        }
+
+        .dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes jumping {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-6px);
+                opacity: 100;
+            }
+        }
+
+        #error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .typewriter {
+            color: #61dafb;
+            font-family: monospace;
+            font-size: 16px;
+            overflow: hidden; 
+            border-right: .15em solid #61dafb; 
+            white-space: nowrap; 
+            margin: 20px auto 0;
+            letter-spacing: .15em;
+            animation: 
+                typing 3.5s steps(30, end),
+                blink-caret .75s step-end infinite;
+            width: 300px; 
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 300px; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #61dafb; }
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .fixed-top-right {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 90px;
+            height: auto;
+            cursor: pointer;
+            opacity: 0;
+            z-index: 1000; 
+            filter: invert(100%); 
+            animation: fadeToggleBtn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeToggleBtn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        #downloadButton {
+            display: none;
+            background-color: rgb(76, 205, 76);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Video</h2>
+        <form id="uploadForm">
+            <input type="file" id="videoFile" name="file" accept="video/mp4">
+            <button type="submit" id="submitButton">Upload and Process</button>
+        </form>
+        <button id="downloadButton">Download Processed Video</button>
+        <div id="error-message">Please select an MP4 video file.</div>
+    </div>
+    <div class="typewriter">Version 1 Beta (Unstable)</div>
+    <a href="index.html">
+        <img src="trimx.png" alt="Logo" class="fixed-top-right">
+    </a>
+    
+    <script>
+        async function verifyToken() {
+            const token = localStorage.getItem('token');
+            const errorMessage = document.getElementById('error-message');
+
+             if (!token) {
+                 errorMessage.innerText = 'No token found. Please log in.';
+                 errorMessage.style.display = 'block';
+                 redirectToLogin();
+                 return false;
+             }
+
+             try {
+                 const response = await fetch('http://localhost:8000/verify-token', {
+                     method: 'POST',
+                     headers: {
+                         'Authorization': `Bearer ${token}`,
+                         'Content-Type': 'application/json'
+                    }
+                 });
+
+                 if (!response.ok) {
+                     errorMessage.innerText = 'Token verification failed. Please log in.';
+                     errorMessage.style.display = 'block';
+                     redirectToLogin();
+                     return false;
+             }
+                 return true;
+            } catch (error) {
+                 errorMessage.innerText = 'Error verifying token. Please try again.';
+                 errorMessage.style.display = 'block';
+                 redirectToLogin();
+                 return false;
+             }
+         }
+
+         function redirectToLogin() {
+             window.location.href = 'login.html';
+         }
+    
+         async function handleFormSubmit(event) {
+     event.preventDefault();
+    
+    const isVerified = await verifyToken();
+     if (!isVerified) {
+         return; 
+     }
+
+    const fileInput = document.getElementById('videoFile');
+    const file = fileInput.files[0];
+     const errorMessage = document.getElementById('error-message');
+    errorMessage.style.display = 'none';
+
+    if (!file || file.type !== 'video/mp4') {
+        errorMessage.innerText = 'Please select an MP4 video file.';
+        errorMessage.style.display = 'block';
+        return;
+    }
+
+    const submitButton = document.getElementById('submitButton');
+    const downloadButton = document.getElementById('downloadButton');
+    submitButton.disabled = true;
+    submitButton.innerHTML = `<span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('http://localhost:8000/process', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const url = data.processed_video_url;
+            if (url) {
+                downloadButton.style.display = 'block';
+                downloadButton.onclick = function() {
+                    window.open(url, '_blank');
+                };
+                submitButton.style.display = 'none'; // Hide the submit button
+            } else {
+                errorMessage.innerText = 'Error processing video.';
+                errorMessage.style.display = 'block';
+            }
+        } else {
+            errorMessage.innerText = 'Error processing video.';
+            errorMessage.style.display = 'block';
+        }
+    } catch (error) {
+        errorMessage.innerText = 'Network error.';
+        errorMessage.style.display = 'block';
+    } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Upload and Process';
+    }
+}
+
+async function initializePage() {
+    const isVerified = await verifyToken();
+    if (isVerified) {
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', handleFormSubmit);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

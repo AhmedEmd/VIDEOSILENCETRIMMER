@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Silence Trimmer</title>
+    <style>body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+    }
+    
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        background-color: #000;
+    }
+    
+    .video-section {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        z-index: -1;
+    }
+    
+    .video-section video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        transform: translate(-50%, -50%);
+    }
+    
+    .content {
+        position: relative;
+        z-index: 1;
+        margin-top: 100vh;
+        background: #000000;
+        padding: 20px;
+        color: #fff;
+        height: 1700px;
+        display: flex;
+    }
+    
+    .arrow-box {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 0;
+        width: 50px;
+        height: 70px;
+        background-color: #000;
+        border: 0.1px solid #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 10;
+    }
+    
+    .arrow-box img {
+        width: 20px;
+        height: auto;
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+        filter: invert(100%);
+    }
+    
+    .menu.active .arrow-box img {
+        transform: rotate(180deg);
+    }
+    
+    .menu {
+        position: fixed;
+        top: 0;
+        right: -120vw;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        transition: right 0.3s ease;
+        z-index: 9;
+        overflow: auto;
+        padding: 20px;
+    }
+    
+    .menu.active {
+        right: 0;
+    }
+    
+    .menu a {
+        display: block;
+        margin: 15px 0;
+        font-size: 2em;
+        font-weight: bold;
+        text-decoration: none;
+        color: #fff;
+        position: relative;
+        padding: 10px 0;
+    }
+    
+    .menu a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background: #fff;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    #main {
+        max-width: 1080px;
+        width: 100vw;
+        height: 100%;
+        margin: 0 auto;
+        background-color: #0d0d0d;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        overflow: hidden;
+        border-bottom: 1px solid white;
+        height: 550px;
+    }
+    
+    #main .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+        background-color: #fff;
+        height: 100px;
+        box-sizing: border-box;
+    }
+    .section1{
+    position: absolute;
+    top:551px;
+    height: 100px;
+    width:100%;
+    max-width: 1080px;
+        width: 100vw;
+        height: 100%;
+        margin: 0 auto;
+        right:0;
+        left:0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+    .section2{
+    position:absolute;
+    height:200px;
+    width:100vw;
+    top:1600px;
+    background-color: #0d0d0d;
+    right:0;
+    left:0;
+    bottom:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid white;
+    
+    }
+    
+    .section1 video {
+    width: 120%;
+    object-fit: contain;
+    }
+    .containerr {
+        font-display: flex;
+        flex-direction: column;
+        margin-top: 30vh;
+        align-self: center;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .menu a:hover::after {
+        transform: scaleX(1);
+    }
+    
+    @media (min-width: 1100px) {
+        .arrow-box {
+            left: 0;
+            right: auto;
+        }
+    
+        .menu.active .arrow-box img {
+            transform: rotate(180deg);
+        }
+    }
+    
+    @media (max-width: 400px) {
+    
+    .video-section video {
+    
+    object-fit: contain; /* Keep the object-fit property as specified */
+    }
+    .shrinked-image{
+    display: none;
+    }
+    .video-section{
+    min-height: 20vh;
+    max-height: 20vh;
+    }
+    .content{
+        margin-top: 19vh;
+        height: 800px;
+    }
+    .section1{
+    top:40vh;
+        height: 110vh;
+    }
+    .section2{
+        top:115vh;
+    }
+    
+    }
+    
+    
+    
+    
+    .grid1 {
+        text-align: left;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000000;
+        color: #ffffff;
+        margin: 0;
+    }
+    
+    .line {
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0;
+    }
+    .text-image-wrapper {
+    display: flex;
+    align-items: center; /* Vertically aligns the text and image */
+    justify-content: space-around; /* Space between the text and the image */
+    }
+    
+    .text-lines {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px; /* Adds some spacing between text and image */
+    }
+    
+    
+    .shrinked-image {
+    max-width: 480px; /* Adjust the size of the image */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain;
+    padding: 20px;
+    opacity: 0; /* Start with the image hidden */
+    animation: fadeIn 2s ease-in-out 3s forwards; /* Animate opacity after a 5s delay */
+    }
+    
+    /* Keyframes for fade-in animation */
+    @keyframes fadeIn {
+    0% {
+    opacity: 0;
+    }
+    100% {
+    opacity: 1;
+    }
+    }
+    
+    
+    /* @keyframes growAndGlowArrow {
+    0%, 100% {
+        transform: scale(1);
+        filter: invert(100%) drop-shadow(0 0 0 transparent);
+    }
+    25%, 75% {
+        transform: scale(1);
+        filter: invert(100%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+    }
+    50% {
+        transform: scale(1.4);
+        filter: invert(100%) drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+    }
+} */
+
+.arrow-box img {
+    width: 20px;
+    height: auto;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    filter: invert(100%);
+}
+
+.arrow-box img.animate {
+    animation: growAndGlowArrow 2s ease-in-out;
+}
+    
+    .word {
+        margin: 0 5px;
+        font-size: 36px;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+    
+    .word.show {
+        opacity: 1;
+    }
+    
+    .colorful {
+        background: linear-gradient(90deg, #ff008c, #ff8c00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    img{
+        filter: invert(100%);
+        width:50vw;
+    }
+    .containerr > a{
+    font-size: 100%;
+    }
+    #red{
+    color:red}</style>
+</head>
+
+<body>
+    <div class="video-section">
+        <video id="background-video" autoplay loop muted playsinline>
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="menu" id="menu">
+        <div class="containerr">
+            <a href="app.html">Try Now</a>
+            <a href="login.html">Login/Signup</a>
+            <a href="about-us.html">About</a>
+            <a href="tobemade.html" id="red">Architecture Flow</a>
+            <a href="contactus.html">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="arrow-box" id="arrow-box">
+        <img src="arrow.png" alt="Arrow">
+    </div>
+    <div class="content">
+        <main id="main">
+            <div class="text-image-wrapper">
+                <div class="text-lines">
+                    <div class="line" id="line1">
+                        <p class="word">IF</p>
+                        <p class="word">TIME</p>
+                        <p class="word">WAS</p>
+                        <p class="word">MONEY</p>
+                        <p class="word">THEN</p>
+                    </div>
+                    <div class="line" id="line2">
+                        <p class="word">THIS</p>
+                        <p class="word">APPLICATION</p>
+                        <p class="word">IS</p>
+                        <p class="word">A</p>
+                    </div>
+                    <div class="line" id="line3">
+                        <p class="word colorful">FORTUNE</p>
+                    </div>
+                </div>
+                <img src="trimx.png" alt="image" class="shrinked-image">
+            </div>
+        </main>
+        <section class="section1">
+            <video autoplay loop muted playsinline>
+                <source src="trimxx.mp4" type="video/mp4">
+            </video>
+        </section>
+        <section class="section2">
+            <p>&copy; 2024 Trimx. All rights reserved.</p>
+        </section>
+        
+    </div>
+  
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const arrowBox = document.getElementById('arrow-box');
+            const menu = document.getElementById('menu');
+            const fileInput = document.getElementById('video-upload');
+            const fileNameDisplay = document.getElementById('file-name');
+            const submitButton = document.getElementById('submit');
+            const arrowImg = arrowBox.querySelector('img');
+        
+            // Toggle the menu and rotate the arrow based on screen width
+            arrowBox.addEventListener('click', function () {
+                menu.classList.toggle('active');
+                const screenWidth = window.innerWidth;
+                arrowImg.style.transform = menu.classList.contains('active') 
+                    ? (screenWidth >= 1100 ? 'rotate(180deg)' : 'rotate(0deg)')
+                    : (screenWidth >= 1100 ? 'rotate(0deg)' : 'rotate(180deg)');
+            });
+        
+            // Display the selected file name and enable/disable submit button
+            fileInput.addEventListener('change', function () {
+                const file = fileInput.files[0];
+                if (file) {
+                    fileNameDisplay.textContent = file.name;
+                    submitButton.disabled = false;
+                } else {
+                    fileNameDisplay.textContent = '';
+                    submitButton.disabled = true;
+                }
+            });
+        
+            // Handle submit button click
+            submitButton.addEventListener('click', function () {
+                if (fileInput.files.length === 0) {
+                    alert('Please upload a video file.');
+                } else {
+                    alert('Video file submitted!');
+                }
+            });
+        
+            // Arrow animation: Initial and repeating animation
+            function animateArrowImg() {
+                arrowImg.classList.add('animate');
+                setTimeout(() => {
+                    arrowImg.classList.remove('animate');
+                }, 2000);
+            }
+        
+            setTimeout(animateArrowImg, 2000); // Initial animation
+            setInterval(animateArrowImg, 5000); // Repeat animation every 5 seconds
+        });
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const lines = [
+                ['if', 'time', 'was', 'money,', 'then'],
+                ['this', 'application', 'is', 'a,'],
+                ['fortune.']
+            ];
+            let delay = 0;
+        
+            // Function to animate each word
+            function animateWords(lineIndex, wordIndex) {
+                const line = document.getElementById(`line${lineIndex + 1}`);
+                const wordElement = line.children[wordIndex];
+        
+                if (!wordElement) return;
+        
+                // Add 'show' class to make the word visible
+                setTimeout(() => {
+                    wordElement.classList.add('show');
+                }, delay);
+        
+                delay += 200;
+        
+                // Animate the next word or the next line
+                if (wordIndex + 1 < lines[lineIndex].length) {
+                    animateWords(lineIndex, wordIndex + 1);
+                } else if (lineIndex + 1 < lines.length) {
+                    animateWords(lineIndex + 1, 0);
+                }
+            }
+        
+            // Start animating words
+            animateWords(0, 0);
+        });
+        
+ </script>
+</body>
+
+</html>

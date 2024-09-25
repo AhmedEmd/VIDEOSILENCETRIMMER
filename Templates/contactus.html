@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 350px;
+            padding: 25px;
+            background: #1e1e1e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #61dafb;
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #61dafb;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #4ea0d9;
+        }
+
+        #error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        #success-message {
+            color: #61dafb;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .fixed-top-right {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 90px;
+            height: auto;
+            cursor: pointer;
+            opacity: 0;
+            z-index: 1000;
+            filter: invert(100%);
+            animation: fadeToggleBtn 1s ease-in-out forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes fadeToggleBtn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+            <button type="submit" id="submitButton">Send Message</button>
+        </form>
+        <div id="error-message">Please fill in all fields correctly.</div>
+        <div id="success-message">Your message has been sent successfully!</div>
+    </div>
+    <a href="index.html">
+        <img src="trimx.png" alt="Logo" class="fixed-top-right">
+    </a>
+
+    <script>
+        // Function to handle form submission
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Basic validation
+            if (!name || !email || !message) {
+                errorMessage.innerText = 'Please fill in all fields correctly.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Sending the message to the backend (replace URL with actual endpoint)
+            try {
+                const response = await fetch('http://localhost:8000/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        message: message,
+                    }),
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('contactForm').reset();
+                } else {
+                    errorMessage.innerText = 'Failed to send message. Please try again.';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.innerText = 'Network error. Please try again later.';
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // Event listener for form submission
+        document.getElementById('contactForm').addEventListener('submit', handleFormSubmit);
+    </script>
+</body>
+</html>
